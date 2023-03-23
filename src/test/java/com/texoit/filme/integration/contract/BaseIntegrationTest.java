@@ -2,8 +2,6 @@ package com.texoit.filme.integration.contract;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
-
 public abstract class BaseIntegrationTest<T> {
     protected String route;
 
@@ -13,9 +11,6 @@ public abstract class BaseIntegrationTest<T> {
         this.route = route;
         this.typeParameterClass = typeParameterClass;
     }
-
-    @Value("${server.baseurl}")
-    private String baseurl;
 
     protected abstract T create();
     protected abstract void getListAssertions(List<T> list);
