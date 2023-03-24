@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,8 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.texoit.filme.dtos.IntervaloDTO;
 import com.texoit.filme.dtos.MinMaxIntervalosDTO;
 import com.texoit.filme.helpers.FilmeHelper;
 import com.texoit.filme.models.Estudio;
@@ -104,7 +100,7 @@ public class FilmeTests {
         ResponseEntity<Filme[]> response = this.testRestTemplate
             .exchange(baseurl+"/filmes/", HttpMethod.GET, new HttpEntity<>(headers), Filme[].class);
 
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
@@ -121,7 +117,7 @@ public class FilmeTests {
         
         Filme model = new Gson().fromJson(response.getBody(), Filme.class);
 
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(model.getTitulo(), created.getTitulo());
     }
 
@@ -136,7 +132,7 @@ public class FilmeTests {
         
         Filme model = new Gson().fromJson(response.getBody(), Filme.class);
 
-        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(model.getTitulo(), created.getTitulo());
     }
 
@@ -152,7 +148,7 @@ public class FilmeTests {
         
         Filme model = new Gson().fromJson(response.getBody(), Filme.class);
 
-        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(model.getTitulo(), other.getTitulo());
     }
 
@@ -168,21 +164,19 @@ public class FilmeTests {
         ResponseEntity<String> response = this.testRestTemplate
             .exchange(baseurl+"/filmes/"+created.getId(), HttpMethod.DELETE, entity, String.class);
         
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(Boolean.parseBoolean(response.getBody()));
     }
 
     @Test
     public void verificarIntervaloPremios() {
-        Filme created = baseCreate();
-        
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         
         ResponseEntity<String> response = this.testRestTemplate
-            .exchange(baseurl+"/filmes/intervalo-premios", HttpMethod.DELETE, new HttpEntity<>(headers), String.class);
+            .exchange(baseurl+"/filmes/intervalo-premios", HttpMethod.GET, new HttpEntity<>(headers), String.class);
         
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         
         MinMaxIntervalosDTO minMaxIntervaloDTO = filmeService.findMinMaxIntervalor();
         MinMaxIntervalosDTO gsonResponse = new Gson().fromJson(response.getBody(), MinMaxIntervalosDTO.class);
