@@ -5,18 +5,26 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.texoit.filme.helpers.FilmeHelper;
-import com.texoit.filme.repositories.FilmeRepository;
+import com.texoit.filme.services.EstudioService;
+import com.texoit.filme.services.FilmeService;
+import com.texoit.filme.services.ProducaoService;
 
 @Component    
 public class InitialCommandRunner implements CommandLineRunner {
  
     @Autowired
-    FilmeRepository filmeRepository;
+    FilmeService filmeService;
+
+    @Autowired
+    ProducaoService producaoService;
+
+    @Autowired
+    EstudioService estudioService;
     
     @Override
     public void run(String... args) throws Exception {
         FilmeHelper filmeHelper = new FilmeHelper();
-        filmeHelper.popularBase(filmeRepository);
+        filmeHelper.popularBase(filmeService, estudioService, producaoService);
     }
 
 }

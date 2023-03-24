@@ -1,17 +1,12 @@
 package com.texoit.filme.repositories;
 
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import com.texoit.filme.models.Filme;
 
 public interface FilmeRepository extends JpaRepository<Filme, Long> {
-    List<Filme> findByAnoAndTituloAndEstudioAndProdutor(
-        Integer ano, 
-        String titulo, 
-        String estudio, 
-        String produtor
-    );
+    Set<Filme> findByAnoAndTitulo(Integer ano, String titulo);
+    Set<Filme> findByVencedor(boolean vencedor);
 }
