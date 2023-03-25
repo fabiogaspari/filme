@@ -8,4 +8,4 @@
 4. Para testar o método para obter o produtor com maior intervalo entre dois prêmios consecutivos, e o que obteve dois prêmios mais rápido, basta acessar o navegador e digitar na barra de navegação o seguinte endereço: localhost:8080/filmes/intervalo-premios
 
 ### Observações:
-1. Em uma análise da base de dados, foi descoberta a string Brian Robbinsand Sharla Sumpter Bridgett (referindo-se a Brian Robbins and Sharla Sumpter Bridgett), onde Brian Robbinsand está unido ao artigo and. Não foi feito tratamento nesse caso, pois para separar os produtores apenas pela string "and " poderia gerar erros em outras bases de dados. Nesse caso em especifico, sugere-se tratar apenas o registro.
+1. Em uma análise da base de dados, foi descoberta a string "Brian Robbinsand Sharla Sumpter Bridgett" (referindo-se a "Brian Robbins and Sharla Sumpter Bridgett"), onde "Brian Robbinsand" está unido à conjunção "and". Não foi feito tratamento nesse caso, pois separando os produtores apenas pela string "and " poderia gerar erros em outras bases de dados. Nesse caso em especifico, sugere-se tratar apenas o registro.
