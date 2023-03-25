@@ -61,54 +61,88 @@ public class FilmeService extends AbstractService<Filme> {
             });
         });
 
+        List<ProducaoAnosDTO> listaProducaoVencedorAnos = this.construirListaProducaoVencedoreAnos(listaProducoesAnos);
+
+        List<List<IntervaloDTO>> intervalos = this.construrMinMaxIntervalos(listaProducaoVencedorAnos);
+
+        return this.montarMinMaxIntervalos(intervalos);
+    }
+    
+    /** 
+     * @param listaProducoesAnos
+     * @return List<ProducaoAnosDTO>
+     */
+    public List<ProducaoAnosDTO> construirListaProducaoVencedoreAnos(List<ProducaoAnoDTO> listaProducoesAnos) {
         List<ProducaoAnosDTO> listaProducaoVencedorAnos = new ArrayList<ProducaoAnosDTO>(); 
 
-        for (int i = 0; i < (listaProducoesAnos.size() - 1); i++) {
-            final int k;
-            k = i;
+        listaProducoesAnos.forEach(lpa -> {
             ProducaoAnosDTO producaoAnosDTO = new ProducaoAnosDTO();
             producaoAnosDTO.setAnos(new ArrayList<Integer>());
-            producaoAnosDTO.setProducao(listaProducoesAnos.get(i).getProducao());
+            producaoAnosDTO.setProducao(lpa.getProducao());
             
-            //se o Producao ja esta na lista, nao insere novamente
-            if ( listaProducaoVencedorAnos.stream().filter(lpva -> lpva.getProducao().getProducao().equals(listaProducoesAnos.get(k).getProducao().getProducao())).count() == 0 ) {
-                for (int j = 0; j < (listaProducoesAnos.size() - 1); j++) {
-                    boolean produtoIgual = listaProducoesAnos.get(i).getProducao().equals(listaProducoesAnos.get(j).getProducao());
-                    if ( produtoIgual ) {
-                        producaoAnosDTO.getAnos().add(listaProducoesAnos.get(j).getAno());
-                    }
-                }            
+            //se producao ja esta na lista, nao insere novamente
+            if ( listaProducaoVencedorAnos.stream().filter(lpva -> lpva.getProducao().getProducao()
+                                                                        .equals(lpa.getProducao().getProducao()))
+                                                                        .count() == 0 
+            ) {
+                    listaProducoesAnos.forEach(lpa2 -> {
+                        boolean produtoIgual = lpa.getProducao().equals(lpa2.getProducao());
+                        if ( produtoIgual ) {
+                            producaoAnosDTO.getAnos().add(lpa2.getAno());
+                        }
+                    });
                 listaProducaoVencedorAnos.add(producaoAnosDTO);
             }
-        }
+        });
 
+        return listaProducaoVencedorAnos;
+    }
+    
+    /** 
+     * @param listaProducaoVencedorAnos
+     * @return List<List<IntervaloDTO>>
+     */
+    public List<List<IntervaloDTO>> construrMinMaxIntervalos(List<ProducaoAnosDTO> listaProducaoVencedorAnos) {
         List<IntervaloDTO> listaMinIntervalos = new ArrayList<IntervaloDTO>();
         List<IntervaloDTO> listaMaxIntervalos = new ArrayList<IntervaloDTO>();
-        for (int i = 0; i < ( listaProducaoVencedorAnos.size() - 1); i++) {
-            if ( listaProducaoVencedorAnos.get(i).getAnos().size() > 1 ) {
-                listaProducaoVencedorAnos.get(i).setAnos(listaProducaoVencedorAnos.get(i).getAnos().stream().sorted().toList());
+        
+        listaProducaoVencedorAnos.forEach(lpva -> {
+            if ( lpva.getAnos().size() > 1 ) {
+                lpva.setAnos(lpva.getAnos().stream().sorted().toList());
                 
                 IntervaloDTO minIntervalo = new IntervaloDTO();
-                minIntervalo.setInterval((listaProducaoVencedorAnos.get(i).getAnos().get(1) - listaProducaoVencedorAnos.get(i).getAnos().get(0)));
-                minIntervalo.setPreviousWin(listaProducaoVencedorAnos.get(i).getAnos().get(0));
-                minIntervalo.setFollowingWin(listaProducaoVencedorAnos.get(i).getAnos().get(1));
-                minIntervalo.setProducer(listaProducaoVencedorAnos.get(i).getProducao().getProducao());
+                minIntervalo.setInterval((lpva.getAnos().get(1) - lpva.getAnos().get(0)));
+                minIntervalo.setPreviousWin(lpva.getAnos().get(0));
+                minIntervalo.setFollowingWin(lpva.getAnos().get(1));
+                minIntervalo.setProducer(lpva.getProducao().getProducao());
                 listaMinIntervalos.add(minIntervalo);
     
                 IntervaloDTO maxIntervalo = new IntervaloDTO();
-                maxIntervalo.setInterval((listaProducaoVencedorAnos.get(i).getAnos().get(listaProducaoVencedorAnos.get(i).getAnos().size() - 1) - listaProducaoVencedorAnos.get(i).getAnos().get(0)));
-                maxIntervalo.setPreviousWin(listaProducaoVencedorAnos.get(i).getAnos().get(0));
-                maxIntervalo.setFollowingWin(listaProducaoVencedorAnos.get(i).getAnos().get(listaProducaoVencedorAnos.get(i).getAnos().size() - 1));
-                maxIntervalo.setProducer(listaProducaoVencedorAnos.get(i).getProducao().getProducao());
+                maxIntervalo.setInterval((lpva.getAnos().get(lpva.getAnos().size() - 1) - lpva.getAnos().get(0)));
+                maxIntervalo.setPreviousWin(lpva.getAnos().get(0));
+                maxIntervalo.setFollowingWin(lpva.getAnos().get(lpva.getAnos().size() - 1));
+                maxIntervalo.setProducer(lpva.getProducao().getProducao());
                 listaMaxIntervalos.add(maxIntervalo);
             }
-        }
+        });
+        
+        List<List<IntervaloDTO>> intervalos = new ArrayList<>();
+        intervalos.add(listaMinIntervalos);
+        intervalos.add(listaMaxIntervalos);
 
-        int min = listaMinIntervalos.stream().map(IntervaloDTO::getInterval).mapToInt(Number::intValue).summaryStatistics().getMin();
-        int max = listaMinIntervalos.stream().map(IntervaloDTO::getInterval).mapToInt(Number::intValue).summaryStatistics().getMax();
+        return intervalos;
+    }
 
-        Set<IntervaloDTO> listaMinimos = new HashSet<>(listaMinIntervalos.stream().filter(lmi -> lmi.getInterval().equals(min)).toList());
-        Set<IntervaloDTO> listaMaximos = new HashSet<>(listaMaxIntervalos.stream().filter(lma -> lma.getInterval().equals(max)).toList());
+    /** 
+     * @param intervalos
+     * @return MinMaxIntervalosDTO
+     */
+    public MinMaxIntervalosDTO montarMinMaxIntervalos(List<List<IntervaloDTO>> intervalos) {
+        int min = intervalos.get(0).stream().map(IntervaloDTO::getInterval).mapToInt(Number::intValue).summaryStatistics().getMin();
+        int max = intervalos.get(1).stream().map(IntervaloDTO::getInterval).mapToInt(Number::intValue).summaryStatistics().getMax();
+
+        Set<IntervaloDTO> listaMinimos = new HashSet<>(intervalos.get(0).stream().filter(lmi -> lmi.getInterval().equals(min)).toList());
+        Set<IntervaloDTO> listaMaximos = new HashSet<>(intervalos.get(1).stream().filter(lma -> lma.getInterval().equals(max)).toList());
         
         MinMaxIntervalosDTO minMaxIntervalosDTO = new MinMaxIntervalosDTO();
         minMaxIntervalosDTO.setMin(listaMinimos);

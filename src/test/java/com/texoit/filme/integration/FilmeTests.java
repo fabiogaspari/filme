@@ -48,14 +48,14 @@ public class FilmeTests {
     private FilmeService filmeService;
 
     @Autowired
-    private ProducaoService ProducaoService;
+    private ProducaoService producaoService;
 
     @Autowired
     private EstudioService estudioService;
 
     Filme model;
     
-    Filme create(String estudio, String Producao, String titulo, Boolean isVencedor) {
+    Filme create(String estudio, String producao, String titulo, Boolean isVencedor) {
         Estudio objEstudio = new Estudio();
         objEstudio.setEstudio(estudio);
         Estudio estudioCriado = estudioService.create(objEstudio);
@@ -63,15 +63,15 @@ public class FilmeTests {
         estudios.add(estudioCriado);
 
         Producao objProducao = new Producao();
-        objProducao.setProducao(Producao);
-        Producao ProducaoCriado = ProducaoService.create(objProducao);
-        List<Producao> Producoes = new ArrayList<Producao>();
-        Producoes.add(ProducaoCriado);
+        objProducao.setProducao(producao);
+        Producao producaoCriado = producaoService.create(objProducao);
+        List<Producao> producoes = new ArrayList<Producao>();
+        producoes.add(producaoCriado);
 
         this.model = new Filme();
         this.model.setAno(1990);
         this.model.setEstudios(estudios);
-        this.model.setProducoes(Producoes);
+        this.model.setProducoes(producoes);
         this.model.setTitulo(titulo);
         this.model.setVencedor(isVencedor);
         
@@ -79,14 +79,14 @@ public class FilmeTests {
     }
 
     Filme baseCreate() {
-        return create("estudio", "Producao", "titulo", false);
+        return create("estudio", "producao", "titulo", false);
     }
 
     @BeforeAll
     public void beforeAll() {
         FilmeHelper filmeHelper = new FilmeHelper();
         try {
-            filmeHelper.popularBase(filmeService, estudioService, ProducaoService);
+            filmeHelper.popularBase(filmeService, estudioService, producaoService);
         } catch (IOException e) {
             System.exit(0);
         }
@@ -139,7 +139,7 @@ public class FilmeTests {
     @Test
     public void put() {
         Filme created = baseCreate();
-        Filme other = create("estudio 2", "Producao 2", "titulo 2", true);
+        Filme other = create("estudio 2", "producao 2", "titulo 2", true);
         
         HttpEntity<Filme> entity = new HttpEntity<Filme>(other);
 
