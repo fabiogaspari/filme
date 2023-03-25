@@ -178,7 +178,7 @@ public class FilmeTests {
         
         assertEquals(HttpStatus.OK, response.getStatusCode());
         
-        MinMaxIntervalosDTO minMaxIntervaloDTO = filmeService.findMinMaxIntervalor();
+        MinMaxIntervalosDTO minMaxIntervaloDTO = filmeService.findMinMaxIntervalo();
         MinMaxIntervalosDTO gsonResponse = new Gson().fromJson(response.getBody(), MinMaxIntervalosDTO.class);
 
         assertTrue(minMaxIntervaloDTO.getMax().equals(gsonResponse.getMax()));

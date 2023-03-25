@@ -26,7 +26,7 @@ public class FilmeController extends BaseController<Filme> {
     @GetMapping("/intervalo-premios")
     protected ResponseEntity<MinMaxIntervalosDTO> premios() {
         return new ResponseEntity<MinMaxIntervalosDTO>(
-            this.service.findMinMaxIntervalor(),
+            this.service.findMinMaxIntervalo(),
             null, 
             HttpStatus.OK
         );

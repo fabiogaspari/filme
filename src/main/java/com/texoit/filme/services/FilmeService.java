@@ -47,7 +47,7 @@ public class FilmeService extends AbstractService<Filme> {
     /** 
      * @return MinMaxIntervalosDTO
      */
-    public MinMaxIntervalosDTO findMinMaxIntervalor() {
+    public MinMaxIntervalosDTO findMinMaxIntervalo() {
         Set<Filme> vencedores = this.repository.findByVencedor(true);
 
         List<ProducaoAnoDTO> listaProducoesAnos = new ArrayList<ProducaoAnoDTO>();

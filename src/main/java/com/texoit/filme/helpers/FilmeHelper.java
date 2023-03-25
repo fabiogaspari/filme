@@ -22,7 +22,7 @@ import com.texoit.filme.services.ProducaoService;
 public class FilmeHelper {
     private final String DELIMITADOR_PONTO_E_VIRGULA = ";";
     private final String DELIMITADOR_VIRGURA = ",";
-    private final String DELIMITADOR_AND = "and ";
+    private final String DELIMITADOR_AND = " and ";
     
     /** 
      * @param filmeService
@@ -118,16 +118,15 @@ public class FilmeHelper {
      * @return boolean
      */
     public boolean compararProducaoEEstudio(Set<Filme> filmes) {
-        Comparator<Producao> ordenarProducoes = new Comparator<Producao>() {
-            @Override
-            public int compare(Producao o1, Producao o2) {
-                return o1.getProducao().compareTo(o2.getProducao());
-            }
-        };
-        
         boolean existe = false;
 
         if ( !filmes.isEmpty() ) {
+            Comparator<Producao> ordenarProducoes = new Comparator<Producao>() {
+                @Override
+                public int compare(Producao o1, Producao o2) {
+                    return o1.getProducao().compareTo(o2.getProducao());
+                }
+            };
             existe = filmes.stream().filter(new Predicate<Filme>() {
                 @Override
                 public boolean test(Filme t) {
@@ -141,14 +140,13 @@ public class FilmeHelper {
             }).count() > 0;
         }
         
-        Comparator<Estudio> ordenarEstudios = new Comparator<Estudio>() {
-            @Override
-            public int compare(Estudio o1, Estudio o2) {
-                return o1.getEstudio().compareTo(o2.getEstudio());
-            }
-        };
-
         if ( existe ) {
+            Comparator<Estudio> ordenarEstudios = new Comparator<Estudio>() {
+                @Override
+                public int compare(Estudio o1, Estudio o2) {
+                    return o1.getEstudio().compareTo(o2.getEstudio());
+                }
+            };
             existe = filmes.stream().filter(new Predicate<Filme>() {
                 @Override
                 public boolean test(Filme t) {
