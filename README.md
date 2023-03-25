@@ -7,5 +7,5 @@
 3. Rode os testes com o comando: mvn test
 4. Rode o projeto com o comando: mvn spring-boot:run
 
-### Observação:
+### Observações:
 1. Em uma análise da base de dados, foi descoberto o nome Brian Robbinsand Sharla Sumpter Bridgett, onde Brian Robbinsand está unido ao artigo and. Não foi feito tratamento nesse caso, pois para separar os produtores apenas pela string "and " poderia gerar erros em outras bases de dados. Nesse caso em especifico, sugere-se tratar apenas o registro.
