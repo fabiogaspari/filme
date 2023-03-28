@@ -29,8 +29,7 @@ public class FilmeHelper {
      * @throws NumberFormatException
      * @throws IOException
      */
-    public void popularBase(FilmeService filmeService, EstudioService estudioService, ProducaoService ProducaoService) throws NumberFormatException, IOException {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("movielist.csv");
+    public void popularBase(InputStream is, FilmeService filmeService, EstudioService estudioService, ProducaoService ProducaoService) throws NumberFormatException, IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
         String linha;

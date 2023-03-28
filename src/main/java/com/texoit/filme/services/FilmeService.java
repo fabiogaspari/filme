@@ -110,19 +110,27 @@ public class FilmeService extends AbstractService<Filme> {
             if ( lpva.getAnos().size() > 1 ) {
                 lpva.setAnos(lpva.getAnos().stream().sorted().toList());
                 
-                IntervaloDTO minIntervalo = new IntervaloDTO();
-                minIntervalo.setInterval((lpva.getAnos().get(1) - lpva.getAnos().get(0)));
-                minIntervalo.setPreviousWin(lpva.getAnos().get(0));
-                minIntervalo.setFollowingWin(lpva.getAnos().get(1));
-                minIntervalo.setProducer(lpva.getProducao().getProducao());
-                listaMinIntervalos.add(minIntervalo);
-    
-                IntervaloDTO maxIntervalo = new IntervaloDTO();
-                maxIntervalo.setInterval((lpva.getAnos().get(lpva.getAnos().size() - 1) - lpva.getAnos().get(0)));
-                maxIntervalo.setPreviousWin(lpva.getAnos().get(0));
-                maxIntervalo.setFollowingWin(lpva.getAnos().get(lpva.getAnos().size() - 1));
-                maxIntervalo.setProducer(lpva.getProducao().getProducao());
-                listaMaxIntervalos.add(maxIntervalo);
+                Integer diffMin = (lpva.getAnos().get(lpva.getAnos().size()-1) - lpva.getAnos().get(lpva.getAnos().size()-2));
+                
+                if ( diffMin > 0 ) {
+                    IntervaloDTO minIntervalo = new IntervaloDTO();
+                    minIntervalo.setInterval(diffMin);
+                    minIntervalo.setPreviousWin(lpva.getAnos().get(lpva.getAnos().size()-2));
+                    minIntervalo.setFollowingWin(lpva.getAnos().get(lpva.getAnos().size()-1));
+                    minIntervalo.setProducer(lpva.getProducao().getProducao());
+                    listaMinIntervalos.add(minIntervalo);
+                }
+
+                Integer diffMax = (lpva.getAnos().get(lpva.getAnos().size() - 1) - lpva.getAnos().get(lpva.getAnos().size() - 2));
+
+                if ( diffMax > 0 ) {
+                    IntervaloDTO maxIntervalo = new IntervaloDTO();
+                    maxIntervalo.setInterval(diffMax);
+                    maxIntervalo.setPreviousWin(lpva.getAnos().get(lpva.getAnos().size() - 2));
+                    maxIntervalo.setFollowingWin(lpva.getAnos().get(lpva.getAnos().size() - 1));
+                    maxIntervalo.setProducer(lpva.getProducao().getProducao());
+                    listaMaxIntervalos.add(maxIntervalo);
+                }
             }
         });
         

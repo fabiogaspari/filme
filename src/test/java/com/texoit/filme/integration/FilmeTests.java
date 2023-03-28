@@ -3,11 +3,11 @@ package com.texoit.filme.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -24,8 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.google.gson.Gson;
+import com.texoit.filme.dtos.IntervaloDTO;
 import com.texoit.filme.dtos.MinMaxIntervalosDTO;
-import com.texoit.filme.helpers.FilmeHelper;
 import com.texoit.filme.models.Estudio;
 import com.texoit.filme.models.Filme;
 import com.texoit.filme.models.Producao;
@@ -38,6 +38,10 @@ import com.texoit.filme.services.ProducaoService;
 @TestInstance(Lifecycle.PER_CLASS)
 public class FilmeTests {
     
+    static {
+        System.setProperty("enviroment", "test");
+    }
+
     @Value("${server.baseurl}")
     private String baseurl;
 
@@ -80,16 +84,6 @@ public class FilmeTests {
 
     Filme baseCreate() {
         return create("estudio", "producao", "titulo", false);
-    }
-
-    @BeforeAll
-    public void beforeAll() {
-        FilmeHelper filmeHelper = new FilmeHelper();
-        try {
-            filmeHelper.popularBase(filmeService, estudioService, producaoService);
-        } catch (IOException e) {
-            System.exit(0);
-        }
     }
 
     @Test
@@ -176,11 +170,30 @@ public class FilmeTests {
         ResponseEntity<String> response = this.testRestTemplate
             .exchange(baseurl+"/filmes/intervalo-premios", HttpMethod.GET, new HttpEntity<>(headers), String.class);
         
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        MinMaxIntervalosDTO minMaxIntervaloDTO = new MinMaxIntervalosDTO();
+
+        Set<IntervaloDTO> setMinIntervalos = new HashSet<>();
+        IntervaloDTO minIntervalo = new IntervaloDTO();
+        minIntervalo.setFollowingWin(1991);
+        minIntervalo.setPreviousWin(1990);
+        minIntervalo.setInterval(1);
+        minIntervalo.setProducer("Joel Silver");
+        setMinIntervalos.add(minIntervalo);
         
-        MinMaxIntervalosDTO minMaxIntervaloDTO = filmeService.findMinMaxIntervalo();
+        Set<IntervaloDTO> setMaxIntervalos = new HashSet<>();
+        IntervaloDTO maxIntervalo = new IntervaloDTO();
+        maxIntervalo.setFollowingWin(2015);
+        maxIntervalo.setPreviousWin(2002);
+        maxIntervalo.setInterval(13);
+        maxIntervalo.setProducer("Matthew Vaughn");
+        setMaxIntervalos.add(maxIntervalo);
+
+        minMaxIntervaloDTO.setMin(setMinIntervalos);
+        minMaxIntervaloDTO.setMax(setMaxIntervalos);
+
         MinMaxIntervalosDTO gsonResponse = new Gson().fromJson(response.getBody(), MinMaxIntervalosDTO.class);
 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(minMaxIntervaloDTO.getMax().equals(gsonResponse.getMax()));
         assertTrue(minMaxIntervaloDTO.getMin().equals(gsonResponse.getMin()));
     }
