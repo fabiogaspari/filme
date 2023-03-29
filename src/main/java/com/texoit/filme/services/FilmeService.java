@@ -1,7 +1,6 @@
 package com.texoit.filme.services;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -63,7 +62,7 @@ public class FilmeService extends AbstractService<Filme> {
 
         List<ProducaoAnosDTO> listaProducaoVencedorAnos = this.construirListaProducaoVencedoreAnos(listaProducoesAnos);
 
-        List<List<IntervaloDTO>> intervalos = this.construrMinMaxIntervalos(listaProducaoVencedorAnos);
+        List<IntervaloDTO> intervalos = this.construrMinMaxIntervalos(listaProducaoVencedorAnos);
 
         return this.montarMinMaxIntervalos(intervalos);
     }
@@ -100,57 +99,43 @@ public class FilmeService extends AbstractService<Filme> {
     
     /** 
      * @param listaProducaoVencedorAnos
-     * @return List<List<IntervaloDTO>>
+     * @return List<IntervaloDTO>
      */
-    public List<List<IntervaloDTO>> construrMinMaxIntervalos(List<ProducaoAnosDTO> listaProducaoVencedorAnos) {
-        List<IntervaloDTO> listaMinIntervalos = new ArrayList<IntervaloDTO>();
-        List<IntervaloDTO> listaMaxIntervalos = new ArrayList<IntervaloDTO>();
+    public List<IntervaloDTO> construrMinMaxIntervalos(List<ProducaoAnosDTO> listaProducaoVencedorAnos) {
+        List<IntervaloDTO> listaIntervalos = new ArrayList<IntervaloDTO>();
         
         listaProducaoVencedorAnos.forEach(lpva -> {
             if ( lpva.getAnos().size() > 1 ) {
-                lpva.setAnos(lpva.getAnos().stream().sorted().toList());
-                
-                Integer diffMin = (lpva.getAnos().get(1) - lpva.getAnos().get(0));
-                
-                if ( diffMin > 0 ) {
-                    IntervaloDTO minIntervalo = new IntervaloDTO();
-                    minIntervalo.setInterval(diffMin);
-                    minIntervalo.setPreviousWin(lpva.getAnos().get(lpva.getAnos().size()-2));
-                    minIntervalo.setFollowingWin(lpva.getAnos().get(lpva.getAnos().size()-1));
-                    minIntervalo.setProducer(lpva.getProducao().getProducao());
-                    listaMinIntervalos.add(minIntervalo);
-                }
-
-                Integer diffMax = (lpva.getAnos().get(lpva.getAnos().size() - 1) - lpva.getAnos().get(lpva.getAnos().size() - 2));
-
-                if ( diffMax > 0 ) {
-                    IntervaloDTO maxIntervalo = new IntervaloDTO();
-                    maxIntervalo.setInterval(diffMax);
-                    maxIntervalo.setPreviousWin(lpva.getAnos().get(lpva.getAnos().size() - 2));
-                    maxIntervalo.setFollowingWin(lpva.getAnos().get(lpva.getAnos().size() - 1));
-                    maxIntervalo.setProducer(lpva.getProducao().getProducao());
-                    listaMaxIntervalos.add(maxIntervalo);
+                for (int i = 0; i <= lpva.getAnos().size()-2; i++) {
+                    lpva.setAnos(lpva.getAnos().stream().sorted().toList());
+                    
+                    Integer diff = (lpva.getAnos().get(i+1) - lpva.getAnos().get(i));
+                    
+                    if ( diff > 0 ) {
+                        IntervaloDTO intervalo = new IntervaloDTO();
+                        intervalo.setInterval(diff);
+                        intervalo.setPreviousWin(lpva.getAnos().get(i));
+                        intervalo.setFollowingWin(lpva.getAnos().get(i+1));
+                        intervalo.setProducer(lpva.getProducao().getProducao());
+                        listaIntervalos.add(intervalo);
+                    }
                 }
             }
         });
-        
-        List<List<IntervaloDTO>> intervalos = new ArrayList<>();
-        intervalos.add(listaMinIntervalos);
-        intervalos.add(listaMaxIntervalos);
 
-        return intervalos;
+        return listaIntervalos;
     }
 
     /** 
      * @param intervalos
      * @return MinMaxIntervalosDTO
      */
-    public MinMaxIntervalosDTO montarMinMaxIntervalos(List<List<IntervaloDTO>> intervalos) {
-        int min = intervalos.get(0).stream().map(IntervaloDTO::getInterval).mapToInt(Number::intValue).summaryStatistics().getMin();
-        int max = intervalos.get(1).stream().map(IntervaloDTO::getInterval).mapToInt(Number::intValue).summaryStatistics().getMax();
+    public MinMaxIntervalosDTO montarMinMaxIntervalos(List<IntervaloDTO> intervalos) {
+        int min = intervalos.stream().map(IntervaloDTO::getInterval).mapToInt(Number::intValue).summaryStatistics().getMin();
+        int max = intervalos.stream().map(IntervaloDTO::getInterval).mapToInt(Number::intValue).summaryStatistics().getMax();
 
-        Set<IntervaloDTO> listaMinimos = new HashSet<>(intervalos.get(0).stream().filter(lmi -> lmi.getInterval().equals(min)).toList());
-        Set<IntervaloDTO> listaMaximos = new HashSet<>(intervalos.get(1).stream().filter(lma -> lma.getInterval().equals(max)).toList());
+        List<IntervaloDTO> listaMinimos = intervalos.stream().filter(lmi -> lmi.getInterval().equals(min)).toList();
+        List<IntervaloDTO> listaMaximos = intervalos.stream().filter(lma -> lma.getInterval().equals(max)).toList();
         
         MinMaxIntervalosDTO minMaxIntervalosDTO = new MinMaxIntervalosDTO();
         minMaxIntervalosDTO.setMin(listaMinimos);

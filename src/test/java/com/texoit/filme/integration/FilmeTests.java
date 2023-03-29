@@ -4,9 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -172,7 +170,7 @@ public class FilmeTests {
         
         MinMaxIntervalosDTO minMaxIntervaloDTO = new MinMaxIntervalosDTO();
 
-        Set<IntervaloDTO> setMinIntervalos = new HashSet<>();
+        List<IntervaloDTO> setMinIntervalos = new ArrayList<>();
         IntervaloDTO minIntervalo = new IntervaloDTO();
         minIntervalo.setFollowingWin(1991);
         minIntervalo.setPreviousWin(1990);
@@ -180,7 +178,7 @@ public class FilmeTests {
         minIntervalo.setProducer("Joel Silver");
         setMinIntervalos.add(minIntervalo);
         
-        Set<IntervaloDTO> setMaxIntervalos = new HashSet<>();
+        List<IntervaloDTO> setMaxIntervalos = new ArrayList<>();
         IntervaloDTO maxIntervalo = new IntervaloDTO();
         maxIntervalo.setFollowingWin(2015);
         maxIntervalo.setPreviousWin(2002);

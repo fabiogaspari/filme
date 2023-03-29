@@ -1,12 +1,12 @@
 package com.texoit.filme.dtos;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.Data;
 
 @Data
 public class MinMaxIntervalosDTO {
     
-    private Set<IntervaloDTO> min;
-    private Set<IntervaloDTO> max;
+    private List<IntervaloDTO> min;
+    private List<IntervaloDTO> max;
 }
