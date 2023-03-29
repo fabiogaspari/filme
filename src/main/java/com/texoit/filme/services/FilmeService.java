@@ -110,7 +110,7 @@ public class FilmeService extends AbstractService<Filme> {
             if ( lpva.getAnos().size() > 1 ) {
                 lpva.setAnos(lpva.getAnos().stream().sorted().toList());
                 
-                Integer diffMin = (lpva.getAnos().get(lpva.getAnos().size()-1) - lpva.getAnos().get(lpva.getAnos().size()-2));
+                Integer diffMin = (lpva.getAnos().get(1) - lpva.getAnos().get(0));
                 
                 if ( diffMin > 0 ) {
                     IntervaloDTO minIntervalo = new IntervaloDTO();
